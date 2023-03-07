@@ -6,6 +6,7 @@
 
 #include <esp_types.h>
 #include <stdio.h>
+#include <inttypes.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/semphr.h"
@@ -71,5 +72,5 @@ TEST_CASE("scheduling time test", "[freertos]")
 
     BaseType_t result = xSemaphoreTake(context.end_sema, portMAX_DELAY);
     TEST_ASSERT_EQUAL_HEX32(pdTRUE, result);
-    TEST_PERFORMANCE_LESS_THAN(SCHEDULING_TIME , "%d cycles" ,context.cycles_to_sched);
+    TEST_PERFORMANCE_LESS_THAN(SCHEDULING_TIME , "%"PRIu32" cycles" ,context.cycles_to_sched);
 }
