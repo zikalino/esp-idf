@@ -45,7 +45,7 @@ extern void esp_dbg_stubs_ll_init(void *stub_table_addr);
 // TODO: all called funcs should be in IRAM to work with disabled flash cache
 static void * esp_dbg_stubs_data_alloc(uint32_t size)
 {
-    ESP_LOGV(TAG, "%s %d", __func__, size);
+    ESP_LOGV(TAG, "%s %"PRIu32, __func__, size);
 	void *p = malloc(size);
     ESP_LOGV(TAG, "%s EXIT %p", __func__, p);
     return p;
