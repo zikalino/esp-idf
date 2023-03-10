@@ -129,7 +129,7 @@ bool bootloader_common_erase_part_type_data(const char *list_erase, bool ota_dat
                     marker = "no";
                 }
 
-                ESP_LOGI(TAG, "%2d %-16s data  %08x %08x [%s]", i, partition->label,
+                ESP_LOGI(TAG, "%2d %-16s data  %08"PRIx32" %08"PRIx32" [%s]", i, partition->label,
                          partition->pos.offset, partition->pos.size, marker);
             }
         }

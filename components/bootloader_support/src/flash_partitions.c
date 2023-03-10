@@ -25,7 +25,7 @@ esp_err_t esp_partition_table_verify(const esp_partition_info_t *partition_table
             const esp_partition_pos_t *pos = &part->pos;
             if (pos->offset > chip_size || pos->offset + pos->size > chip_size) {
                 if (log_errors) {
-                    ESP_LOGE(TAG, "partition %d invalid - offset 0x%x size 0x%x exceeds flash chip size 0x%x",
+                    ESP_LOGE(TAG, "partition %d invalid - offset 0x%"PRIx32" size 0x%"PRIx32" exceeds flash chip size 0x%"PRIx32,
                              num_parts, pos->offset, pos->size, chip_size);
                 }
                 return ESP_ERR_INVALID_SIZE;
