@@ -14,7 +14,11 @@
 
 void app_main(void)
 {
-    printf("Hello world!\n");
+    printf("SIZE OF size_t           : %d", sizeof(size_t));
+    printf("SIZE OF long unsigned int: %d", sizeof(long unsigned int));
+    printf("SIZE OF unsigned int     : %d", sizeof(unsigned int));
+
+    printf("Hello world!!!\n");
 
     /* Print chip information */
     esp_chip_info_t chip_info;
@@ -34,10 +38,6 @@ void app_main(void)
         printf("Get flash size failed");
         return;
     }
-
-    printf("SIZE OF size_t           : %d", sizeof(size_t));
-    printf("SIZE OF long unsigned int: %d", sizeof(long unsigned int));
-    printf("SIZE OF unsigned int     : %d", sizeof(unsigned int));
 
     printf("%" PRIu32 "MB %s flash\n", flash_size / (uint32_t)(1024 * 1024),
            (chip_info.features & CHIP_FEATURE_EMB_FLASH) ? "embedded" : "external");
