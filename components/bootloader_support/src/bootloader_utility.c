@@ -347,7 +347,7 @@ static int get_active_otadata_with_check_anti_rollback(const bootloader_state_t 
             ota_slot = ota_seq % bs->app_count; // Actual OTA partition selection
             if (check_anti_rollback(&bs->ota[ota_slot]) == false) {
                 // invalid. This otadata[i] will not be selected as active.
-                ESP_LOGD(TAG, "OTA slot %d has an app with secure_version, this version is smaller than in the device. This OTA slot will not be selected.", ota_slot);
+                ESP_LOGD(TAG, "OTA slot %"PRIu32" has an app with secure_version, this version is smaller than in the device. This OTA slot will not be selected.", ota_slot);
             } else {
                 sec_ver_valid_otadata[i] = true;
             }
@@ -409,7 +409,7 @@ int bootloader_utility_get_selected_boot_partition(const bootloader_state_t *bs)
         int active_otadata = bootloader_common_get_active_otadata(otadata);
 #else
     ESP_LOGI(TAG, "Enabled a check secure version of app for anti rollback");
-    ESP_LOGI(TAG, "Secure version (from eFuse) = %d", esp_efuse_read_secure_version());
+    ESP_LOGI(TAG, "Secure version (from eFuse) = %"PRIu32, esp_efuse_read_secure_version());
     // When CONFIG_BOOTLOADER_APP_ANTI_ROLLBACK is enabled factory partition should not be in partition table, only two ota_app are there.
     if ((otadata[0].ota_seq == UINT32_MAX || otadata[0].crc != bootloader_common_ota_select_crc(&otadata[0])) &&
             (otadata[1].ota_seq == UINT32_MAX || otadata[1].crc != bootloader_common_ota_select_crc(&otadata[1]))) {
