@@ -501,7 +501,7 @@ void bootloader_utility_load_boot_image_from_deep_sleep(void)
         if (partition != NULL) {
             esp_image_metadata_t image_data;
             if (bootloader_load_image_no_verify(partition, &image_data) == ESP_OK) {
-                ESP_LOGI(TAG, "Fast booting app from partition at offset 0x%x", partition->offset);
+                ESP_LOGI(TAG, "Fast booting app from partition at offset 0x%"PRIx32, partition->offset);
                 bootloader_common_update_rtc_retain_mem(NULL, true);
                 load_image(&image_data);
             }
