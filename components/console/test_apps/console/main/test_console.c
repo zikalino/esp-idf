@@ -18,7 +18,7 @@ static int do_hello_cmd(int argc, char **argv)
     return 0;
 }
 
-TEST_CASE("esp console init/deinit test", "[console]")
+TEST_CASE("esp console init/deinit test", "[console][qemu]")
 {
     esp_console_config_t console_config = ESP_CONSOLE_CONFIG_DEFAULT();
     TEST_ESP_OK(esp_console_init(&console_config));
