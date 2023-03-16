@@ -198,7 +198,7 @@ TEST_CASE("Test FreeRTOS static task allocation", "[freertos]")
 static StaticEventGroup_t event_group;
 static EventGroupHandle_t eg_handle;
 
-TEST_CASE("Test FreeRTOS backported eventgroup functions", "[freertos]")
+TEST_CASE("Test FreeRTOS backported eventgroup functions", "[freertos][qemu]")
 {
     eg_handle = xEventGroupCreateStatic((StaticEventGroup_t *)&event_group);
     xEventGroupSetBits(eg_handle, WAIT_BITS);

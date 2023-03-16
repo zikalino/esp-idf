@@ -76,7 +76,7 @@ TEST_CASE("Recurring FreeRTOS timers", "[freertos]")
     TEST_ASSERT( xTimerDelete(recurring, 1) );
 }
 
-TEST_CASE("Static timer creation", "[freertos]")
+TEST_CASE("Static timer creation", "[freertos][qemu]")
 {
     StaticTimer_t static_timer;
     TimerHandle_t created_timer;

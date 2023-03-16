@@ -54,7 +54,7 @@ static void receiver_task(void *arg)
     vTaskDelete(NULL);
 }
 
-TEST_CASE("Stream Buffer: Send-receive tasks", "[freertos]")
+TEST_CASE("Stream Buffer: Send-receive tasks", "[freertos][qemu]")
 {
     test_args_t test_args;
     test_args.stream_buffer = xStreamBufferCreate(TEST_NUM_BYTES, 1);

@@ -47,7 +47,7 @@ static void task_event_group_call_response(void *param)
     vTaskSuspend(NULL);
 }
 
-TEST_CASE("FreeRTOS Event Groups", "[freertos]")
+TEST_CASE("FreeRTOS Event Groups", "[freertos][qemu]")
 {
     eg = xEventGroupCreate();
     done_sem = xSemaphoreCreateCounting(NUM_TASKS, 0);
@@ -163,7 +163,7 @@ static bool on_timer_alarm_cb(gptimer_handle_t timer, const gptimer_alarm_event_
     return task_woken == pdTRUE;
 }
 
-TEST_CASE("FreeRTOS Event Group ISR", "[freertos]")
+TEST_CASE("FreeRTOS Event Group ISR", "[freertos][qemu]")
 {
     done_sem = xSemaphoreCreateBinary();
     eg = xEventGroupCreate();

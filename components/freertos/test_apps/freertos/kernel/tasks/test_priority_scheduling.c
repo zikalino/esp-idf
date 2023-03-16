@@ -53,7 +53,7 @@ static void task_B(void *arg)
     }
 }
 
-TEST_CASE("Tasks: Test priority scheduling", "[freertos]")
+TEST_CASE("Tasks: Test priority scheduling", "[freertos][qemu]")
 {
     TaskHandle_t task_A_handle;
     TaskHandle_t task_B_handle;

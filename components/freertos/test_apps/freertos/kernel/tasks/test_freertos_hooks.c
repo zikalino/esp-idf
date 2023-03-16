@@ -31,7 +31,7 @@ void vApplicationIdleHook(void)
     idle_count++;
 }
 
-TEST_CASE("FreeRTOS idle hook", "[freertos]")
+TEST_CASE("FreeRTOS idle hook", "[freertos][qemu]")
 {
     idle_count = 0;
     vTaskDelay(10);
@@ -52,7 +52,7 @@ void vApplicationTickHook(void)
     tick_count++;
 }
 
-TEST_CASE("FreeRTOS tick hook", "[freertos]")
+TEST_CASE("FreeRTOS tick hook", "[freertos][qemu]")
 {
     unsigned before = xTaskGetTickCount();
     const unsigned SLEEP_FOR = 20;

@@ -58,7 +58,7 @@ void test_queue_registry_task(void *arg)
     vTaskDelete(NULL);  //Delete self
 }
 
-TEST_CASE("Test FreeRTOS Queue Registry", "[freertos]")
+TEST_CASE("Test FreeRTOS Queue Registry", "[freertos][qemu]")
 {
     //Create synchronization semaphores and tasks to test queue registry
     done_sem = xSemaphoreCreateCounting(portNUM_PROCESSORS, 0);

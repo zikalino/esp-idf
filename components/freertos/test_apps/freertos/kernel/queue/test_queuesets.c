@@ -57,7 +57,7 @@ Expected:
 
 #define NUM_QUEUES      5
 
-TEST_CASE("Test Queue sets", "[freertos]")
+TEST_CASE("Test Queue sets", "[freertos][qemu]")
 {
     // Create queues and queue set
     QueueHandle_t queues[NUM_QUEUES];
@@ -136,7 +136,7 @@ static void send_func(void *arg)
     }
 }
 
-TEST_CASE("Test queue sets multi-core", "[freertos]")
+TEST_CASE("Test queue sets multi-core", "[freertos][qemu]")
 {
     // Create done semaphore
     done_sem = xSemaphoreCreateCounting(portNUM_PROCESSORS - 1, 0);
