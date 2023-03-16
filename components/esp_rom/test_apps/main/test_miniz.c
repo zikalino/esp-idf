@@ -13,7 +13,7 @@
 
 #define DATASIZE (1024 * 32)
 
-TEST_CASE("Test miniz compression/decompression", "[rom][miniz]")
+TEST_CASE("Test miniz compression/decompression", "[rom][miniz][qemu]")
 {
     size_t inbytes = 0, outbytes = 0, inpos = 0, outpos = 0, compsz;
     printf("Allocating data buffer and filling it with semi-random data\r\n");

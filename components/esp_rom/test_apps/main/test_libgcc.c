@@ -6,7 +6,7 @@
 #include <complex.h>
 #include "unity.h"
 
-TEST_CASE("libgcc math functions", "[rom][libgcc]")
+TEST_CASE("libgcc math functions", "[rom][libgcc][qemu]")
 {
     extern int64_t __absvdi2(int64_t x);
     TEST_ASSERT(__absvdi2(-1L) == 1);
