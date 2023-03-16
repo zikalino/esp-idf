@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2022-2023 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: CC0-1.0
 
+from time import sleep
+
 import pytest
 from pytest_embedded import Dut
 
@@ -102,3 +104,22 @@ def test_memory_protection(dut: Dut) -> None:
     dut.expect_exact('Press ENTER to see the list of tests')
     dut.write('[heap][mem_prot]')
     dut.expect_unity_test_output(timeout=300)
+
+
+@pytest.mark.esp32
+@pytest.mark.qemu
+@pytest.mark.parametrize(
+    'config, embedded_services',
+    [
+        ('no_poisoning', 'idf,qemu'),
+        ('light_poisoning', 'idf,qemu'),
+        ('comprehensive_poisoning', 'idf,qemu'),
+    ],
+    indirect=True,
+)
+def test_qemu(dut: Dut) -> None:
+    dut.expect_exact('Press ENTER to see the list of tests')
+    # dut may not be ready to accept input, so adding the delay until handled in pytest embedded (RDT-328)
+    sleep(1)
+    dut.write('![qemu-ignore]')
+    dut.expect_unity_test_output(timeout=10)
