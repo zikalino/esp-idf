@@ -20,7 +20,7 @@ def test_esp_rom(dut: Dut) -> None:
 
 @pytest.mark.qemu
 @pytest.mark.esp32
-def test_console_qemu(dut: Dut) -> None:
+def test_esp_rom_qemu(dut: Dut) -> None:
     dut.expect_exact('Press ENTER to see the list of tests')
     # dut may not be ready to accept input, so adding the delay until handled in pytest embedded
     sleep(1)
