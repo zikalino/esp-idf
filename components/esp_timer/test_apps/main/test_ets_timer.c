@@ -37,7 +37,7 @@ static void test_correct_delay_timer_func(void* arg)
     gettimeofday(ptv, NULL);
 }
 
-TEST_CASE("ets_timer produces correct delay", "[ets_timer]")
+TEST_CASE("ets_timer produces correct delay", "[ets_timer][qemu-ignore]")
 {
     ETSTimer timer1 = {0};
 
@@ -93,7 +93,7 @@ static void test_periodic_correct_delays_timer_func(void* arg)
     }
 }
 
-TEST_CASE("periodic ets_timer produces correct delays", "[ets_timer]")
+TEST_CASE("periodic ets_timer produces correct delays", "[ets_timer][qemu-ignore]")
 {
     const int delay_ms = 100;
     ETSTimer timer1 = {0};

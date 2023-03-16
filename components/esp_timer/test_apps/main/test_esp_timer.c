@@ -127,7 +127,7 @@ static void test_correct_delay_timer_func(void* arg)
     *p_end = ref_clock_get();
 }
 
-TEST_CASE("esp_timer produces correct delay", "[esp_timer]")
+TEST_CASE("esp_timer produces correct delay", "[esp_timer][qemu-ignore]")
 {
     int64_t t_end;
     esp_timer_handle_t timer1;
@@ -190,7 +190,7 @@ static void test_periodic_correct_delays_timer_func(void* arg)
     }
 }
 
-TEST_CASE("periodic esp_timer produces correct delays", "[esp_timer]")
+TEST_CASE("periodic esp_timer produces correct delays", "[esp_timer][qemu-ignore]")
 {
     const int delay_ms = 100;
     test_periodic_correct_delays_args_t args = {0};
@@ -267,7 +267,7 @@ static void test_timers_ordered_correctly_timer_func(void* arg)
     esp_timer_start_once(p_args->timer, next_interval * 1000);
 }
 
-TEST_CASE("multiple timers are ordered correctly", "[esp_timer]")
+TEST_CASE("multiple timers are ordered correctly", "[esp_timer][qemu-ignore]")
 {
     test_timers_ordered_correctly_common_t common = {
         .order = {1, 2, 3, 2, 1, 3, 1, 2, 1, 3, 2, 1, 3, 3, 2},
@@ -386,7 +386,7 @@ TEST_CASE("esp_timer for very short intervals", "[esp_timer]")
     TEST_ESP_OK(esp_timer_delete(timer2));
 }
 
-TEST_CASE("esp_timer_get_time call takes less than 1us", "[esp_timer]")
+TEST_CASE("esp_timer_get_time call takes less than 1us", "[esp_timer][qemu-ignore]")
 {
     int64_t begin = esp_timer_get_time();
     volatile int64_t end;
@@ -457,7 +457,7 @@ static void timer_test_monotonic_values_task(void* arg) {
     vTaskDelete(NULL);
  }
 
-TEST_CASE("esp_timer_get_time returns monotonic values", "[esp_timer]")
+TEST_CASE("esp_timer_get_time returns monotonic values", "[esp_timer][qemu-ignore]")
 {
     ref_clock_init();
 
@@ -578,7 +578,7 @@ TEST_CASE("Can delete timer from a separate task, triggered from callback", "[es
     vSemaphoreDelete(args.test_done);
 }
 
-TEST_CASE("esp_timer_impl_advance moves time base correctly", "[esp_timer]")
+TEST_CASE("esp_timer_impl_advance moves time base correctly", "[esp_timer][qemu-ignore]")
 {
     int64_t t0 = esp_timer_get_time();
     const int64_t diff_us = 1000000;
@@ -598,7 +598,7 @@ static void test_run_when_expected_timer_func(void* varg) {
     arg->cb_time = ref_clock_get();
 }
 
-TEST_CASE("after esp_timer_impl_advance, timers run when expected", "[esp_timer]")
+TEST_CASE("after esp_timer_impl_advance, timers run when expected", "[esp_timer][qemu-ignore]")
 {
     ref_clock_init();
 
@@ -711,7 +711,7 @@ static void dport_task(void *pvParameters)
     vTaskDelete(NULL);
 }
 
-TEST_CASE("esp_timer_impl_set_alarm does not set an alarm below the current time", "[esp_timer][timeout=62]")
+TEST_CASE("esp_timer_impl_set_alarm does not set an alarm below the current time", "[esp_timer][timeout=62][qemu-ignore]")
 {
     const int max_timers = 2;
     time_jumped = false;
@@ -762,7 +762,7 @@ static const esp_timer_create_args_t oneshot_timer_args = {
     .callback = &oneshot_timer_callback,
 };
 
-TEST_CASE("esp_timer_impl_set_alarm and using start_once do not lead that the System time jumps back", "[esp_timer][timeout=62]")
+TEST_CASE("esp_timer_impl_set_alarm and using start_once do not lead that the System time jumps back", "[esp_timer][timeout=62][qemu-ignore]")
 {
     time_jumped = false;
     task_stop   = false;
@@ -826,7 +826,7 @@ static void timer_callback5(void* arg)
     *(int64_t *)arg = esp_timer_get_time();
 }
 
-TEST_CASE("Test a latency between a call of callback and real event", "[esp_timer]")
+TEST_CASE("Test a latency between a call of callback and real event", "[esp_timer][qemu-ignore]")
 {
 
     int64_t callback_time = 0;

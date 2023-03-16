@@ -20,7 +20,7 @@ static void timer_cb1(void *arg)
     ++*((int*) arg);
 }
 
-TEST_CASE("Test the periodic timer does not handle lost events during light sleep", "[esp_timer][timeout=20]")
+TEST_CASE("Test the periodic timer does not handle lost events during light sleep", "[esp_timer][timeout=20][qemu-ignore]")
 {
 
     int count_calls;

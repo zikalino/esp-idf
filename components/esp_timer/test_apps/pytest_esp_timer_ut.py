@@ -1,6 +1,8 @@
 # SPDX-FileCopyrightText: 2022-2023 Espressif Systems (Shanghai) CO LTD
 # SPDX-License-Identifier: Unlicense OR CC0-1.0
 
+from time import sleep
+
 import pytest
 from pytest_embedded import Dut
 
@@ -44,3 +46,16 @@ def test_esp_timer_psram(dut: Dut) -> None:
 )
 def test_esp_timer_esp32c2_xtal_26mhz(dut: Dut) -> None:
     dut.run_all_single_board_cases(timeout=120)
+
+
+@pytest.mark.qemu
+@pytest.mark.esp32
+@pytest.mark.parametrize('config', [
+    'general',
+], indirect=True)
+def test_esp_timer_qemu(dut: Dut) -> None:
+    dut.expect_exact('Press ENTER to see the list of tests')
+    # dut may not be ready to accept input, so adding the delay until handled in pytest embedded
+    sleep(1)
+    dut.write('![qemu-ignore]')
+    dut.expect_unity_test_output(timeout=300)
