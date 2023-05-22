@@ -155,9 +155,10 @@ static void handler_execute(esp_event_loop_instance_t* loop, esp_event_handler_n
             if(handler_node == handler) found = true;
         }
     }
-
-    handler->invoked++;
-    handler->time += diff;
+    if (found) {
+        handler->invoked++;
+        handler->time += diff;
+    }
 
     xSemaphoreGive(loop->profiling_mutex);
 #endif
