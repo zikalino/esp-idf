@@ -985,7 +985,7 @@ esp_err_t esp_event_dump(FILE* file)
                 SLIST_FOREACH(id_node_it, &(base_node_it->id_nodes), next) {
                     SLIST_FOREACH(handler_it, &(id_node_it->handlers), next) {
                         memset(id_str_buf, 0, sizeof(id_str_buf));
-                        snprintf(id_str_buf, sizeof(id_str_buf), "%d", id_node_it->id);
+                        snprintf(id_str_buf, sizeof(id_str_buf), "%" PRIi32, id_node_it->id);
 
                         PRINT_DUMP_INFO(dst, sz, HANDLER_DUMP_FORMAT, handler_it->handler_ctx->handler, base_node_it->base ,
                                         id_str_buf, handler_it->invoked, handler_it->time);
