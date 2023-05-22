@@ -23,9 +23,9 @@
 
 #ifdef CONFIG_ESP_EVENT_LOOP_PROFILING
 // LOOP @<address, name> rx:<recieved events no.> dr:<dropped events no.>
-#define LOOP_DUMP_FORMAT              "LOOP @%p,%s rx:%u dr:%u\n"
+#define LOOP_DUMP_FORMAT              "LOOP @%p,%s rx:%" PRIu32 " dr:%" PRIu32 "\n"
  // handler @<address> ev:<base, id> inv:<times invoked> time:<runtime>
-#define HANDLER_DUMP_FORMAT           "  HANDLER @%p ev:%s,%s inv:%u time:%lld us\n"
+#define HANDLER_DUMP_FORMAT           "  HANDLER @%p ev:%s,%s inv:%" PRIu32 " time:%lld us\n"
 
 #define PRINT_DUMP_INFO(dst, sz, ...)  do { \
                                             int cb = snprintf(dst, sz, __VA_ARGS__); \
