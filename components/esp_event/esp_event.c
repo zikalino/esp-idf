@@ -119,8 +119,8 @@ static void handler_execute(esp_event_loop_instance_t* loop, esp_event_handler_n
     ESP_LOGD(TAG, "running post %s:%"PRIu32" with handler %p and context %p on loop %p", post.base, post.id, handler->handler_ctx->handler, &handler->handler_ctx, loop);
 
 #ifdef CONFIG_ESP_EVENT_LOOP_PROFILING
-    int64_t start, diff;
-    start = esp_timer_get_time();
+//    int64_t start, diff;
+//    start = esp_timer_get_time();
 #endif
     // Execute the handler
 #if CONFIG_ESP_EVENT_POST_FROM_ISR
@@ -140,14 +140,14 @@ static void handler_execute(esp_event_loop_instance_t* loop, esp_event_handler_n
 #endif
 
 #ifdef CONFIG_ESP_EVENT_LOOP_PROFILING
-    diff = esp_timer_get_time() - start;
-
-    xSemaphoreTake(loop->profiling_mutex, portMAX_DELAY);
-
-    handler->invoked++;
-    handler->time += diff;
-
-    xSemaphoreGive(loop->profiling_mutex);
+//    diff = esp_timer_get_time() - start;
+//
+//    xSemaphoreTake(loop->profiling_mutex, portMAX_DELAY);
+//
+//    handler->invoked++;
+//    handler->time += diff;
+//
+//    xSemaphoreGive(loop->profiling_mutex);
 #endif
 }
 
