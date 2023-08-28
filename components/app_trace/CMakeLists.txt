@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs
     "app_trace.c"
     "app_trace_util.c"

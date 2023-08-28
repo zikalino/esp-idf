@@ -54,6 +54,9 @@ void httpd_sess_enum(struct httpd_data *hd, httpd_session_enum_function enum_fun
     }
 }
 
+// XXX - mist be defined in FCNTL
+#define F_GETFD 0
+
 // Check if a FD is valid
 static int fd_is_valid(int fd)
 {

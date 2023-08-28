@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 if(NOT EXISTS ${CMAKE_CURRENT_LIST_DIR}/esp-mqtt/CMakeLists.txt)
     set(COMMAND  "git submodule update --init --recursive")
     message(FATAL_ERROR "Missing esp-mqtt submodule. Please run '${COMMAND}' in ESP-IDF directory to fix this.")

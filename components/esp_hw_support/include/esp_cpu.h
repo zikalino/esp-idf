@@ -126,7 +126,8 @@ FORCE_INLINE_ATTR __attribute__((pure)) int esp_cpu_get_core_id(void)
 #ifdef __XTENSA__
     return (int)xt_utils_get_core_id();
 #else
-    return (int)rv_utils_get_core_id();
+    //return (int)rv_utils_get_core_id();
+    return 0;
 #endif
 }
 
@@ -140,7 +141,8 @@ FORCE_INLINE_ATTR void *esp_cpu_get_sp(void)
 #ifdef __XTENSA__
     return xt_utils_get_sp();
 #else
-    return rv_utils_get_sp();
+    //return rv_utils_get_sp();
+    return 0;
 #endif
 }
 
@@ -157,7 +159,8 @@ FORCE_INLINE_ATTR esp_cpu_cycle_count_t esp_cpu_get_cycle_count(void)
 #ifdef __XTENSA__
     return (esp_cpu_cycle_count_t)xt_utils_get_cycle_count();
 #else
-    return (esp_cpu_cycle_count_t)rv_utils_get_cycle_count();
+    //return (esp_cpu_cycle_count_t)rv_utils_get_cycle_count();
+    return 0;
 #endif
 }
 
@@ -174,7 +177,7 @@ FORCE_INLINE_ATTR void esp_cpu_set_cycle_count(esp_cpu_cycle_count_t cycle_count
 #ifdef __XTENSA__
     xt_utils_set_cycle_count((uint32_t)cycle_count);
 #else
-    rv_utils_set_cycle_count((uint32_t)cycle_count);
+    //rv_utils_set_cycle_count((uint32_t)cycle_count);
 #endif
 }
 
@@ -194,7 +197,8 @@ FORCE_INLINE_ATTR __attribute__((pure)) void *esp_cpu_pc_to_addr(uint32_t pc)
     // Xtensa stores window rotation in PC[31:30]
     return (void *)((pc & 0x3fffffffU) | 0x40000000U);
 #else
-    return (void *)pc;
+    //return (void *)pc;
+    return (void*)0;
 #endif
 }
 
@@ -229,7 +233,7 @@ FORCE_INLINE_ATTR void esp_cpu_intr_set_ivt_addr(const void *ivt_addr)
 #ifdef __XTENSA__
     xt_utils_set_vecbase((uint32_t)ivt_addr);
 #else
-    rv_utils_set_mtvec((uint32_t)ivt_addr);
+    //rv_utils_set_mtvec((uint32_t)ivt_addr);
 #endif
 }
 
@@ -243,7 +247,7 @@ FORCE_INLINE_ATTR void esp_cpu_intr_set_ivt_addr(const void *ivt_addr)
  */
 FORCE_INLINE_ATTR void esp_cpu_intr_set_mtvt_addr(const void *mtvt_addr)
 {
-    rv_utils_set_mtvt((uint32_t)mtvt_addr);
+    //rv_utils_set_mtvt((uint32_t)mtvt_addr);
 }
 #endif  //#if SOC_INT_CLIC_SUPPORTED
 
@@ -328,7 +332,8 @@ FORCE_INLINE_ATTR bool esp_cpu_intr_has_handler(int intr_num)
 #ifdef __XTENSA__
     has_handler = xt_int_has_handler(intr_num, esp_cpu_get_core_id());
 #else
-    has_handler = intr_handler_get(intr_num);
+    //has_handler = intr_handler_get(intr_num);
+    has_handler = false;
 #endif
     return has_handler;
 }
@@ -351,7 +356,7 @@ FORCE_INLINE_ATTR void esp_cpu_intr_set_handler(int intr_num, esp_cpu_intr_handl
 #ifdef __XTENSA__
     xt_set_interrupt_handler(intr_num, (xt_handler)handler, handler_arg);
 #else
-    intr_handler_set(intr_num, (intr_handler_t)handler, handler_arg);
+    //intr_handler_set(intr_num, (intr_handler_t)handler, handler_arg);
 #endif
 }
 
@@ -387,7 +392,7 @@ FORCE_INLINE_ATTR void esp_cpu_intr_enable(uint32_t intr_mask)
 #ifdef __XTENSA__
     xt_ints_on(intr_mask);
 #else
-    rv_utils_intr_enable(intr_mask);
+    //rv_utils_intr_enable(intr_mask);
 #endif
 }
 
@@ -401,7 +406,7 @@ FORCE_INLINE_ATTR void esp_cpu_intr_disable(uint32_t intr_mask)
 #ifdef __XTENSA__
     xt_ints_off(intr_mask);
 #else
-    rv_utils_intr_disable(intr_mask);
+    //rv_utils_intr_disable(intr_mask);
 #endif
 }
 
@@ -415,7 +420,8 @@ FORCE_INLINE_ATTR uint32_t esp_cpu_intr_get_enabled_mask(void)
 #ifdef __XTENSA__
     return xt_utils_intr_get_enabled_mask();
 #else
-    return rv_utils_intr_get_enabled_mask();
+    //return rv_utils_intr_get_enabled_mask();
+    return 0;
 #endif
 }
 
@@ -426,11 +432,11 @@ FORCE_INLINE_ATTR uint32_t esp_cpu_intr_get_enabled_mask(void)
  */
 FORCE_INLINE_ATTR void esp_cpu_intr_edge_ack(int intr_num)
 {
-    assert(intr_num >= 0 && intr_num < SOC_CPU_INTR_NUM);
+    //assert(intr_num >= 0 && intr_num < SOC_CPU_INTR_NUM);
 #ifdef __XTENSA__
     xthal_set_intclear((unsigned) (1 << intr_num));
 #else
-    rv_utils_intr_edge_ack((unsigned) intr_num);
+    //rv_utils_intr_edge_ack((unsigned) intr_num);
 #endif
 }
 
@@ -511,7 +517,8 @@ FORCE_INLINE_ATTR bool esp_cpu_dbgr_is_attached(void)
 #ifdef __XTENSA__
     return xt_utils_dbgr_is_attached();
 #else
-    return rv_utils_dbgr_is_attached();
+    //return rv_utils_dbgr_is_attached();
+    return false;
 #endif
 }
 
@@ -523,7 +530,7 @@ FORCE_INLINE_ATTR void esp_cpu_dbgr_break(void)
 #ifdef __XTENSA__
     xt_utils_dbgr_break();
 #else
-    rv_utils_dbgr_break();
+    //rv_utils_dbgr_break();
 #endif
 }
 
@@ -570,7 +577,7 @@ bool esp_cpu_compare_and_set(volatile uint32_t *addr, uint32_t compare_value, ui
  */
 FORCE_INLINE_ATTR void esp_cpu_branch_prediction_enable(void)
 {
-    rv_utils_en_branch_predictor();
+    //rv_utils_en_branch_predictor();
 }
 #endif  //#if SOC_BRANCH_PREDICTOR_SUPPORTED
 

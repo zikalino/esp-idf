@@ -6,7 +6,7 @@
 
 #include <string.h>
 #include <stdlib.h>
-#include <sys/reent.h>
+//#include <sys/reent.h>
 #include <errno.h>
 #include <malloc.h>
 #include "esp_heap_caps.h"

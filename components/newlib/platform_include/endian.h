@@ -48,7 +48,7 @@
  * In xtensa-newlib distribution it is located in <machine/endian.h>
  * but most program expect to be plain <endian.h>.
  */
-#include <machine/endian.h>
+#include <endian.h>
 
 #ifdef __cplusplus
 extern "C" {

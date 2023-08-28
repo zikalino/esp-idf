@@ -32,7 +32,7 @@ typedef int8_t s8;
 #include <endian.h>
 #include <byteswap.h>
 #else
-#include <machine/endian.h>
+#include <endian.h>
 #define __BYTE_ORDER     BYTE_ORDER
 #define __LITTLE_ENDIAN  LITTLE_ENDIAN
 #define __BIG_ENDIAN     BIG_ENDIAN

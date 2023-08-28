@@ -20,9 +20,9 @@
 #include "esp_log.h"
 #include "esp_console.h"
 #include "esp_chip_info.h"
-#include "esp_sleep.h"
-#include "driver/rtc_io.h"
-#include "driver/uart.h"
+//#include "esp_sleep.h"
+//#include "driver/rtc_io.h"
+//#include "driver/uart.h"
 #include "argtable3/argtable3.h"
 #include "cmd_system.h"
 #include "sdkconfig.h"
@@ -60,8 +60,8 @@ static int deep_sleep(int argc, char **argv)
     }
     if (deep_sleep_args.wakeup_time->count) {
         uint64_t timeout = 1000ULL * deep_sleep_args.wakeup_time->ival[0];
-        ESP_LOGI(TAG, "Enabling timer wakeup, timeout=%lluus", timeout);
-        ESP_ERROR_CHECK( esp_sleep_enable_timer_wakeup(timeout) );
+        ESP_LOGI(TAG, "Enabling timer wakeup, timeout=%" PRIu64 "us", timeout);
+        //ESP_ERROR_CHECK( esp_sleep_enable_timer_wakeup(timeout) );
     }
 
 #if SOC_PM_SUPPORT_EXT1_WAKEUP
@@ -91,7 +91,7 @@ static int deep_sleep(int argc, char **argv)
     rtc_gpio_isolate(GPIO_NUM_12);
 #endif //CONFIG_IDF_TARGET_ESP32
 
-    esp_deep_sleep_start();
+    //esp_deep_sleep_start();
     return 1;
 }
 
@@ -137,6 +137,7 @@ static struct {
 
 static int light_sleep(int argc, char **argv)
 {
+    #ifdef XXX
     int nerrors = arg_parse(argc, argv, (void **) &light_sleep_args);
     if (nerrors != 0) {
         arg_print_errors(stderr, light_sleep_args.end, argv[0]);
@@ -193,6 +194,7 @@ static int light_sleep(int argc, char **argv)
         printf("%d\n", cause);
     }
     ESP_LOGI(TAG, "Woke up from: %s", cause_str);
+#endif
     return 0;
 }
 

@@ -13,7 +13,7 @@
 #include "esp_log.h"
 #include "esp_console.h"
 #include "esp_vfs_dev.h"
-#include "esp_vfs_fat.h"
+//#include "esp_vfs_fat.h"
 #include "nvs.h"
 #include "nvs_flash.h"
 #include "cmd_system.h"
@@ -45,6 +45,7 @@ static const char* TAG = "example";
 
 static void initialize_filesystem(void)
 {
+    #ifdef XXXXXX
     static wl_handle_t wl_handle;
     const esp_vfs_fat_mount_config_t mount_config = {
             .max_files = 4,
@@ -55,6 +56,7 @@ static void initialize_filesystem(void)
         ESP_LOGE(TAG, "Failed to mount FATFS (%s)", esp_err_to_name(err));
         return;
     }
+    #endif
 }
 #endif // CONFIG_STORE_HISTORY
 
@@ -70,19 +72,19 @@ static void initialize_nvs(void)
 
 void app_main(void)
 {
-    esp_console_repl_t *repl = NULL;
-    esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
+    //esp_console_repl_t *repl = NULL;
+    //esp_console_repl_config_t repl_config = ESP_CONSOLE_REPL_CONFIG_DEFAULT();
     /* Prompt to be printed before each line.
      * This can be customized, made dynamic, etc.
      */
-    repl_config.prompt = PROMPT_STR ">";
-    repl_config.max_cmdline_length = CONFIG_CONSOLE_MAX_COMMAND_LINE_LENGTH;
+    //repl_config.prompt = PROMPT_STR ">";
+    //repl_config.max_cmdline_length = CONFIG_CONSOLE_MAX_COMMAND_LINE_LENGTH;
 
     initialize_nvs();
 
 #if CONFIG_CONSOLE_STORE_HISTORY
     initialize_filesystem();
-    repl_config.history_save_path = HISTORY_PATH;
+    //repl_config.history_save_path = HISTORY_PATH;
     ESP_LOGI(TAG, "Command history enabled");
 #else
     ESP_LOGI(TAG, "Command history disabled");
@@ -98,8 +100,8 @@ void app_main(void)
     register_nvs();
 
 #if defined(CONFIG_ESP_CONSOLE_UART_DEFAULT) || defined(CONFIG_ESP_CONSOLE_UART_CUSTOM)
-    esp_console_dev_uart_config_t hw_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
-    ESP_ERROR_CHECK(esp_console_new_repl_uart(&hw_config, &repl_config, &repl));
+    //esp_console_dev_uart_config_t hw_config = ESP_CONSOLE_DEV_UART_CONFIG_DEFAULT();
+    //ESP_ERROR_CHECK(esp_console_new_repl_uart(&hw_config, &repl_config, &repl));
 
 #elif defined(CONFIG_ESP_CONSOLE_USB_CDC)
     esp_console_dev_usb_cdc_config_t hw_config = ESP_CONSOLE_DEV_CDC_CONFIG_DEFAULT();
@@ -113,5 +115,5 @@ void app_main(void)
 #error Unsupported console type
 #endif
 
-    ESP_ERROR_CHECK(esp_console_start_repl(repl));
+    //ESP_ERROR_CHECK(esp_console_start_repl(repl));
 }

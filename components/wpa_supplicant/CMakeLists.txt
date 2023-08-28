@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs "port/os_xtensa.c"
     "port/eloop.c"
     "src/ap/ap_config.c"

@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 if(CONFIG_BT_ENABLED)
 
     set(srcs "")

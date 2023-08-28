@@ -24,10 +24,10 @@ int poll(struct pollfd *fds, nfds_t nfds, int timeout)
     struct _reent* r = __getreent();
     int ret = 0;
 
-    if (fds == NULL) {
-        __errno_r(r) = ENOENT;
-        return -1;
-    }
+    //if (fds == NULL) {
+    //    __errno_r(r) = ENOENT;
+    //    return -1;
+    //}
 
     FD_ZERO(&readfds);
     FD_ZERO(&writefds);

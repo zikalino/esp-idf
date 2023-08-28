@@ -117,6 +117,7 @@
 #include <unistd.h>
 #include <assert.h>
 #include "linenoise.h"
+#include <stdint.h>
 
 #define LINENOISE_DEFAULT_HISTORY_MAX_LEN 100
 #define LINENOISE_DEFAULT_MAX_LINE 4096
@@ -232,12 +233,12 @@ static int getCursorPosition(void) {
     const int in_fd = fileno(stdin);
     /* The following ANSI escape sequence is used to get from the TTY the
      * cursor position. */
-    const char get_cursor_cmd[] = "\x1b[6n";
+    //const char get_cursor_cmd[] = "\x1b[6n";
 
     /* Send the command to the TTY on the other end of the UART.
      * Let's use unistd's write function. Thus, data sent through it are raw
      * reducing the overhead compared to using fputs, fprintf, etc... */
-    write(out_fd, get_cursor_cmd, sizeof(get_cursor_cmd));
+    //write(out_fd, get_cursor_cmd, sizeof(get_cursor_cmd));
 
     /* For USB CDC, it is required to flush the output. */
     flushWrite();
@@ -800,7 +801,7 @@ void linenoiseEditDeletePrevWord(struct linenoiseState *l) {
 
 uint32_t getMillis(void) {
     struct timeval tv = { 0 };
-    gettimeofday(&tv, NULL);
+    //gettimeofday(&tv, NULL);
     return tv.tv_sec * 1000 + tv.tv_usec / 1000;
 }
 

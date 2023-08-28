@@ -3,7 +3,9 @@ idf_build_get_property(target IDF_TARGET)
 
 # On Linux, there is currently no HAL, hence this simple component registration
 if(${target} STREQUAL "linux")
-    idf_component_register()
+    set(includes "include")
+    idf_component_register(
+        INCLUDE_DIRS ${includes})
     return()
 endif()
 

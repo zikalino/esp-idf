@@ -1,3 +1,10 @@
+if(IDF_TARGET STREQUAL "linux")
+    set(srcs "src/esp_timer.c")
+    idf_component_register(SRCS "${srcs}"
+                    INCLUDE_DIRS include)
+    return()
+endif()
+
 idf_build_get_property(target IDF_TARGET)
 
 set(srcs "src/esp_timer.c"

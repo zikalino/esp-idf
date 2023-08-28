@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs
     "src/bootloader_common.c"
     "src/bootloader_common_loader.c"

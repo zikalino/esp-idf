@@ -1352,11 +1352,11 @@ void xRingbufferPrintInfo(RingbufHandle_t xRingbuffer)
     Ringbuffer_t *pxRingbuffer = (Ringbuffer_t *)xRingbuffer;
     configASSERT(pxRingbuffer);
     printf("Rb size:%d\tfree: %d\trptr: %d\tfreeptr: %d\twptr: %d, aptr: %d\n",
-           pxRingbuffer->xSize, prvGetFreeSize(pxRingbuffer),
-           pxRingbuffer->pucRead - pxRingbuffer->pucHead,
-           pxRingbuffer->pucFree - pxRingbuffer->pucHead,
-           pxRingbuffer->pucWrite - pxRingbuffer->pucHead,
-           pxRingbuffer->pucAcquire - pxRingbuffer->pucHead);
+           (int)pxRingbuffer->xSize, (int)prvGetFreeSize(pxRingbuffer),
+           (int)(pxRingbuffer->pucRead - pxRingbuffer->pucHead),
+           (int)(pxRingbuffer->pucFree - pxRingbuffer->pucHead),
+           (int)(pxRingbuffer->pucWrite - pxRingbuffer->pucHead),
+           (int)(pxRingbuffer->pucAcquire - pxRingbuffer->pucHead));
 }
 
 BaseType_t xRingbufferGetStaticBuffer(RingbufHandle_t xRingbuffer, uint8_t **ppucRingbufferStorage, StaticRingbuffer_t **ppxStaticRingbuffer)

@@ -1,3 +1,7 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
 idf_build_get_property(idf_target IDF_TARGET)
 
 if(IDF_TARGET STREQUAL "esp32p4")

@@ -11,7 +11,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <errno.h>
-#include <reent.h>
+//#include <reent.h>
 #include <sys/fcntl.h>
 #include "sdkconfig.h"
 #include "esp_rom_uart.h"

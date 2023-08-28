@@ -11,7 +11,7 @@
 #include <reent.h>
 #include <unistd.h>
 #include <sys/types.h>
-#include <sys/reent.h>
+//#include <sys/reent.h>
 #include <sys/time.h>
 #include <sys/times.h>
 #include <sys/lock.h>

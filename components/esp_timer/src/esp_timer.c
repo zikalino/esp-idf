@@ -6,7 +6,7 @@
 
 #include <sys/param.h>
 #include <string.h>
-#include "soc/soc.h"
+//#include "soc/soc.h"
 #include "esp_types.h"
 #include "esp_attr.h"
 #include "esp_err.h"
@@ -17,9 +17,9 @@
 #include "freertos/semphr.h"
 #include "esp_ipc.h"
 #include "esp_timer.h"
-#include "esp_timer_impl.h"
+//#include "esp_timer_impl.h"
 
-#include "esp_private/startup_internal.h"
+//#include "esp_private/startup_internal.h"
 #include "esp_private/esp_timer_private.h"
 #include "esp_private/system_internal.h"
 
@@ -127,7 +127,7 @@ esp_err_t esp_timer_create(const esp_timer_create_args_t* args,
         args->dispatch_method < 0 || args->dispatch_method >= ESP_TIMER_MAX) {
         return ESP_ERR_INVALID_ARG;
     }
-    esp_timer_handle_t result = (esp_timer_handle_t) heap_caps_calloc(1, sizeof(*result), MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
+    esp_timer_handle_t result = NULL; //(esp_timer_handle_t) heap_caps_calloc(1, sizeof(*result), MALLOC_CAP_8BIT | MALLOC_CAP_INTERNAL);
     if (result == NULL) {
         return ESP_ERR_NO_MEM;
     }
@@ -167,7 +167,7 @@ esp_err_t IRAM_ATTR esp_timer_restart(esp_timer_handle_t timer, uint64_t timeout
     esp_timer_dispatch_t dispatch_method = timer->flags & FL_ISR_DISPATCH_METHOD;
     timer_list_lock(dispatch_method);
 
-    const int64_t now = esp_timer_impl_get_time();
+    const int64_t now = 0; // esp_timer_impl_get_time();
     const uint64_t period = timer->period;
 
     /* We need to remove the timer to the list of timers and reinsert it at
@@ -181,7 +181,7 @@ esp_err_t IRAM_ATTR esp_timer_restart(esp_timer_handle_t timer, uint64_t timeout
          * - if the alarm was a one-shot one, i.e. `period` is 0, it remains non-periodic. */
         if (period != 0) {
             /* Remove function got rid of the alarm and period fields, restore them */
-            const uint64_t new_period = MAX(timeout_us, esp_timer_impl_get_min_period_us());
+            const uint64_t new_period = MAX(timeout_us, 0 /*esp_timer_impl_get_min_period_us()*/);
             timer->alarm = now + new_period;
             timer->period = new_period;
         } else {
@@ -205,7 +205,7 @@ esp_err_t IRAM_ATTR esp_timer_start_once(esp_timer_handle_t timer, uint64_t time
     if (!is_initialized()) {
         return ESP_ERR_INVALID_STATE;
     }
-    int64_t alarm = esp_timer_get_time() + timeout_us;
+    int64_t alarm = 0; //esp_timer_get_time() + timeout_us;
     esp_timer_dispatch_t dispatch_method = timer->flags & FL_ISR_DISPATCH_METHOD;
     esp_err_t err;
 
@@ -238,8 +238,8 @@ esp_err_t IRAM_ATTR esp_timer_start_periodic(esp_timer_handle_t timer, uint64_t 
     if (!is_initialized()) {
         return ESP_ERR_INVALID_STATE;
     }
-    period_us = MAX(period_us, esp_timer_impl_get_min_period_us());
-    int64_t alarm = esp_timer_get_time() + period_us;
+    period_us = MAX(period_us, 0 /*esp_timer_impl_get_min_period_us()*/);
+    int64_t alarm = 0; // esp_timer_get_time() + period_us;
     esp_timer_dispatch_t dispatch_method = timer->flags & FL_ISR_DISPATCH_METHOD;
     esp_err_t err;
     timer_list_lock(dispatch_method);
@@ -289,7 +289,7 @@ esp_err_t esp_timer_delete(esp_timer_handle_t timer)
         return ESP_ERR_INVALID_ARG;
     }
 
-    int64_t alarm = esp_timer_get_time();
+    int64_t alarm = 0; // esp_timer_get_time();
     esp_err_t err;
     timer_list_lock(ESP_TIMER_TASK);
 
@@ -334,7 +334,7 @@ static IRAM_ATTR esp_err_t timer_insert(esp_timer_handle_t timer, bool without_u
         }
     }
     if (without_update_alarm == false && timer == LIST_FIRST(&s_timers[dispatch_method])) {
-        esp_timer_impl_set_alarm_id(timer->alarm, dispatch_method);
+        //esp_timer_impl_set_alarm_id(timer->alarm, dispatch_method);
     }
     return ESP_OK;
 }
@@ -348,12 +348,12 @@ static IRAM_ATTR esp_err_t timer_remove(esp_timer_handle_t timer)
     timer->alarm = 0;
     timer->period = 0;
     if (timer == first_timer) { // if this timer was the first in the list.
-        uint64_t next_timestamp = UINT64_MAX;
+        //uint64_t next_timestamp = UINT64_MAX;
         first_timer = LIST_FIRST(&s_timers[dispatch_method]);
         if (first_timer) { // if after removing the timer from the list, this list is not empty.
-            next_timestamp = first_timer->alarm;
+            //next_timestamp = first_timer->alarm;
         }
-        esp_timer_impl_set_alarm_id(next_timestamp, dispatch_method);
+        //esp_timer_impl_set_alarm_id(next_timestamp, dispatch_method);
     }
 #if WITH_PROFILING
     timer_insert_inactive(timer);
@@ -414,7 +414,7 @@ static bool timer_process_alarm(esp_timer_dispatch_t dispatch_method)
     esp_timer_handle_t it;
     while (1) {
         it = LIST_FIRST(&s_timers[dispatch_method]);
-        int64_t now = esp_timer_impl_get_time();
+        int64_t now = 0; // esp_timer_impl_get_time();
         if (it == NULL || it->alarm > now) {
             break;
         }
@@ -454,17 +454,17 @@ static bool timer_process_alarm(esp_timer_dispatch_t dispatch_method)
             timer_list_lock(dispatch_method);
 #if WITH_PROFILING
             it->times_triggered++;
-            it->total_callback_run_time += esp_timer_impl_get_time() - callback_start;
+            it->total_callback_run_time += 0; // esp_timer_impl_get_time() - callback_start;
 #endif
         }
     } // while(1)
     if (it) {
         if (dispatch_method == ESP_TIMER_TASK || (dispatch_method != ESP_TIMER_TASK && processed == true)) {
-            esp_timer_impl_set_alarm_id(it->alarm, dispatch_method);
+            //esp_timer_impl_set_alarm_id(it->alarm, dispatch_method);
         }
     } else {
         if (processed) {
-            esp_timer_impl_set_alarm_id(UINT64_MAX, dispatch_method);
+            //esp_timer_impl_set_alarm_id(UINT64_MAX, dispatch_method);
         }
     }
     timer_list_unlock(dispatch_method);
@@ -488,6 +488,7 @@ IRAM_ATTR void esp_timer_isr_dispatch_need_yield(void)
 }
 #endif
 
+#ifdef XXXXXXXXXXXXXX
 static void IRAM_ATTR timer_alarm_handler(void* arg)
 {
     BaseType_t xHigherPriorityTaskWoken = pdFALSE;
@@ -505,9 +506,10 @@ static void IRAM_ATTR timer_alarm_handler(void* arg)
         vTaskNotifyGiveFromISR(s_timer_task, &xHigherPriorityTaskWoken);
     }
     if (xHigherPriorityTaskWoken == pdTRUE) {
-        portYIELD_FROM_ISR();
+        //portYIELD_FROM_ISR();
     }
 }
+#endif
 
 static IRAM_ATTR inline bool is_initialized(void)
 {
@@ -516,9 +518,9 @@ static IRAM_ATTR inline bool is_initialized(void)
 
 esp_err_t esp_timer_early_init(void)
 {
-    esp_timer_impl_early_init();
+    //esp_timer_impl_early_init();
 #if CONFIG_ESP_TIME_FUNCS_USE_ESP_TIMER
-    esp_timer_impl_init_system_time();
+    //esp_timer_impl_init_system_time();
 #endif
     return ESP_OK;
 }
@@ -565,19 +567,19 @@ esp_err_t esp_timer_init(void)
     }
 #endif // CONFIG_ESP_TIMER_ISR_AFFINITY_NO_AFFINITY
     if (err == ESP_OK) {
-        err = esp_timer_impl_init(&timer_alarm_handler);
-        if (err != ESP_OK) {
-            ESP_EARLY_LOGE(TAG, "ISR init failed");
-            deinit_timer_task();
-        }
+        //err = esp_timer_impl_init(&timer_alarm_handler);
+        //if (err != ESP_OK) {
+        //    ESP_EARLY_LOGE(TAG, "ISR init failed");
+        //    deinit_timer_task();
+        //}
     }
     return err;
 }
 
-ESP_SYSTEM_INIT_FN(esp_timer_startup_init, CONFIG_ESP_TIMER_ISR_AFFINITY, 100)
-{
-    return esp_timer_init();
-}
+//ESP_SYSTEM_INIT_FN(esp_timer_startup_init, CONFIG_ESP_TIMER_ISR_AFFINITY, 100)
+//{
+//    return esp_timer_init();
+//}
 
 esp_err_t esp_timer_deinit(void)
 {
@@ -603,7 +605,7 @@ esp_err_t esp_timer_deinit(void)
     }
 #endif
 
-    esp_timer_impl_deinit();
+    //esp_timer_impl_deinit();
     deinit_timer_task();
     return ESP_OK;
 }
@@ -618,13 +620,13 @@ static void print_timer_info(esp_timer_handle_t t, char** dst, size_t* dst_size)
     } else {
         cb = snprintf(*dst, *dst_size, "timer@%-10p  ", t);
     }
-    cb += snprintf(*dst + cb, *dst_size + cb, "%-10lld  %-12lld  %-12d  %-12d  %-12d  %-12lld\n",
-                    (uint64_t)t->period, t->alarm, t->times_armed,
-                    t->times_triggered, t->times_skipped, t->total_callback_run_time);
+    cb += snprintf(*dst + cb, *dst_size + cb, "%-10" PRIu64 "  %-12" PRIu64 "  %-12d  %-12d  %-12d  %-12" PRIu64 "\n",
+                    (uint64_t)t->period, t->alarm, (int)t->times_armed,
+                    (int)t->times_triggered, (int)t->times_skipped, t->total_callback_run_time);
     /* keep this in sync with the format string, used in esp_timer_dump */
 #define TIMER_INFO_LINE_LEN 90
 #else
-    size_t cb = snprintf(*dst, *dst_size, "timer@%-14p  %-10lld  %-12lld\n", t, (uint64_t)t->period, t->alarm);
+    size_t cb = snprintf(*dst, *dst_size, "timer@%-14p  %-10" PRIu64 "  %-12" PRIu64 "\n", t, (uint64_t)t->period, t->alarm);
 #define TIMER_INFO_LINE_LEN 46
 #endif
     *dst += cb;

@@ -1,7 +1,11 @@
 idf_build_get_property(target IDF_TARGET)
 if(${target} STREQUAL "linux")
+    list(APPEND srcs
+        "esp_flash_api_linux.c")
     idf_component_register(INCLUDE_DIRS include
-                           PRIV_INCLUDE_DIRS include/spi_flash)
+                           PRIV_INCLUDE_DIRS include/spi_flash
+                           REQUIRES hal
+                           SRCS "${srcs}")
     return()
 endif()
 

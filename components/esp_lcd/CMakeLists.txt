@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs "src/esp_lcd_common.c"
          "src/esp_lcd_panel_io.c"
          "src/esp_lcd_panel_io_i2c_v1.c"

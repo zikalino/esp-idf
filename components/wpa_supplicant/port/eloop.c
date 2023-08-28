@@ -32,7 +32,7 @@ struct eloop_timeout {
 
 struct eloop_data {
 	struct dl_list timeout;
-	ETSTimer eloop_timer;
+	//ETSTimer eloop_timer;
 	bool eloop_started;
 };
 
@@ -49,23 +49,23 @@ static int eloop_run_wrapper(void *data)
 	return 0;
 }
 
-static void eloop_run_timer(void *args)
-{
-	/* Execute timers in pptask context to make it thread safe */
-	wifi_ipc_config_t cfg;
-
-	cfg.fn = eloop_run_wrapper;
-	cfg.arg = NULL;
-	cfg.arg_size = 0;
-	esp_wifi_ipc_internal(&cfg, false);
-}
+//static void eloop_run_timer(void *args)
+//{
+//	/* Execute timers in pptask context to make it thread safe */
+//	wifi_ipc_config_t cfg;
+//
+//	cfg.fn = eloop_run_wrapper;
+//	cfg.arg = NULL;
+//	cfg.arg_size = 0;
+//	esp_wifi_ipc_internal(&cfg, false);
+//}
 
 int eloop_init(void)
 {
 	os_memset(&eloop, 0, sizeof(eloop));
 	dl_list_init(&eloop.timeout);
-	os_timer_disarm(&eloop.eloop_timer);
-	os_timer_setfn(&eloop.eloop_timer, (ETSTimerFunc *)eloop_run_timer, NULL);
+	//os_timer_disarm(&eloop.eloop_timer);
+	//os_timer_setfn(&eloop.eloop_timer, (ETSTimerFunc *)eloop_run_timer, NULL);
 
 	eloop_data_lock = os_recursive_mutex_create();
 
@@ -142,8 +142,8 @@ run:
 			timeout->func_name, line, timeout->handler, count);
 #endif
 	ELOOP_LOCK();
-	os_timer_disarm(&eloop.eloop_timer);
-	os_timer_arm(&eloop.eloop_timer, 0, 0);
+	//os_timer_disarm(&eloop.eloop_timer);
+	//os_timer_arm(&eloop.eloop_timer, 0, 0);
 	ELOOP_UNLOCK();
 
 	return 0;
@@ -339,8 +339,8 @@ void eloop_run(void)
 				os_reltime_sub(&timeout->time, &now, &tv);
 				ms = tv.sec * 1000 + tv.usec / 1000;
 				ELOOP_LOCK();
-				os_timer_disarm(&eloop.eloop_timer);
-				os_timer_arm(&eloop.eloop_timer, ms, 0);
+				//os_timer_disarm(&eloop.eloop_timer);
+				//os_timer_arm(&eloop.eloop_timer, ms, 0);
 				ELOOP_UNLOCK();
 				goto out;
 			}
@@ -402,7 +402,7 @@ void eloop_destroy(void)
 		os_semphr_delete(eloop_data_lock);
 		eloop_data_lock = NULL;
 	}
-	os_timer_disarm(&eloop.eloop_timer);
-	os_timer_done(&eloop.eloop_timer);
+	//os_timer_disarm(&eloop.eloop_timer);
+	//os_timer_done(&eloop.eloop_timer);
 	os_memset(&eloop, 0, sizeof(eloop));
 }

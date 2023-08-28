@@ -8,9 +8,9 @@
 #include <string.h>
 #include <assert.h>
 #include <sys/errno.h>
-#include <sys/fcntl.h>
-#include <sys/ioctl.h>
-#include <sys/reent.h>
+//#include <sys/fcntl.h>
+//#include <sys/ioctl.h>
+//#include <sys/reent.h>
 #include <sys/unistd.h>
 #include <sys/lock.h>
 #include <sys/param.h>
@@ -47,7 +47,7 @@ static const char *TAG = "vfs";
 #define FD_TABLE_ENTRY_UNUSED   (fd_table_t) { .permanent = false, .has_pending_close = false, .has_pending_select = false, .vfs_index = -1, .local_fd = -1 }
 
 typedef uint8_t local_fd_t;
-_Static_assert((1 << (sizeof(local_fd_t)*8)) >= MAX_FDS, "file descriptor type too small");
+//_Static_assert((1 << (sizeof(local_fd_t)*8)) >= MAX_FDS, "file descriptor type too small");
 
 typedef int8_t vfs_index_t;
 _Static_assert((1 << (sizeof(vfs_index_t)*8)) >= VFS_MAX_COUNT, "VFS index type too small");
@@ -130,7 +130,7 @@ esp_err_t esp_vfs_register(const char* base_path, const esp_vfs_t* vfs, void* ct
 esp_err_t esp_vfs_register_fd_range(const esp_vfs_t *vfs, void *ctx, int min_fd, int max_fd)
 {
     if (min_fd < 0 || max_fd < 0 || min_fd > MAX_FDS || max_fd > MAX_FDS || min_fd > max_fd) {
-        ESP_LOGD(TAG, "Invalid arguments: esp_vfs_register_fd_range(0x%x, 0x%x, %d, %d)", (int) vfs, (int) ctx, min_fd, max_fd);
+        //ESP_LOGD(TAG, "Invalid arguments: esp_vfs_register_fd_range(0x%x, 0x%x, %d, %d)", (int)((unsigned int) vfs), (int) ctx, min_fd, max_fd);
         return ESP_ERR_INVALID_ARG;
     }
 
@@ -369,7 +369,6 @@ const vfs_entry_t* get_vfs_for_path(const char* path)
  */
 #define CHECK_AND_CALL(ret, r, pvfs, func, ...) \
     if (pvfs->vfs.func == NULL) { \
-        __errno_r(r) = ENOSYS; \
         return -1; \
     } \
     if (pvfs->vfs.flags & ESP_VFS_FLAG_CONTEXT_PTR) { \
@@ -381,7 +380,6 @@ const vfs_entry_t* get_vfs_for_path(const char* path)
 
 #define CHECK_AND_CALLV(r, pvfs, func, ...) \
     if (pvfs->vfs.func == NULL) { \
-        __errno_r(r) = ENOSYS; \
         return; \
     } \
     if (pvfs->vfs.flags & ESP_VFS_FLAG_CONTEXT_PTR) { \
@@ -392,7 +390,6 @@ const vfs_entry_t* get_vfs_for_path(const char* path)
 
 #define CHECK_AND_CALLP(ret, r, pvfs, func, ...) \
     if (pvfs->vfs.func == NULL) { \
-        __errno_r(r) = ENOSYS; \
         return NULL; \
     } \
     if (pvfs->vfs.flags & ESP_VFS_FLAG_CONTEXT_PTR) { \
@@ -405,7 +402,6 @@ int esp_vfs_open(struct _reent *r, const char * path, int flags, int mode)
 {
     const vfs_entry_t *vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
         return -1;
     }
     const char *path_within_vfs = translate_path(vfs, path);
@@ -426,10 +422,10 @@ int esp_vfs_open(struct _reent *r, const char * path, int flags, int mode)
         int ret;
         CHECK_AND_CALL(ret, r, vfs, close, fd_within_vfs);
         (void) ret; // remove "set but not used" warning
-        __errno_r(r) = ENOMEM;
+        //__errno_r(r) = ENOMEM;
         return -1;
     }
-    __errno_r(r) = errno;
+    //__errno_r(r) = errno;
     return -1;
 }
 
@@ -438,7 +434,7 @@ ssize_t esp_vfs_write(struct _reent *r, int fd, const void * data, size_t size)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     ssize_t ret;
@@ -451,7 +447,7 @@ off_t esp_vfs_lseek(struct _reent *r, int fd, off_t size, int mode)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     off_t ret;
@@ -464,7 +460,7 @@ ssize_t esp_vfs_read(struct _reent *r, int fd, void * dst, size_t size)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     ssize_t ret;
@@ -474,30 +470,36 @@ ssize_t esp_vfs_read(struct _reent *r, int fd, void * dst, size_t size)
 
 ssize_t esp_vfs_pread(int fd, void *dst, size_t size, off_t offset)
 {
-    struct _reent *r = __getreent();
+    /*
+    struct _reent *r 0; //__errno_r(r) =
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     ssize_t ret;
     CHECK_AND_CALL(ret, r, vfs, pread, local_fd, dst, size, offset);
     return ret;
+    */
+    return 0;
 }
 
 ssize_t esp_vfs_pwrite(int fd, const void *src, size_t size, off_t offset)
 {
-    struct _reent *r = __getreent();
+    /*
+    struct _reent *r 0; //__errno_r(r) =
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     ssize_t ret;
     CHECK_AND_CALL(ret, r, vfs, pwrite, local_fd, src, size, offset);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_close(struct _reent *r, int fd)
@@ -505,7 +507,7 @@ int esp_vfs_close(struct _reent *r, int fd)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -528,7 +530,7 @@ int esp_vfs_fstat(struct _reent *r, int fd, struct stat * st)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -541,7 +543,7 @@ int esp_vfs_fcntl_r(struct _reent *r, int fd, int cmd, int arg)
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -553,9 +555,9 @@ int esp_vfs_ioctl(int fd, int cmd, ...)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -570,9 +572,9 @@ int esp_vfs_fsync(int fd)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -586,7 +588,7 @@ int esp_vfs_stat(struct _reent *r, const char * path, struct stat * st)
 {
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, path);
@@ -599,9 +601,9 @@ int esp_vfs_utime(const char *path, const struct utimbuf *times)
 {
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, path);
@@ -613,12 +615,12 @@ int esp_vfs_link(struct _reent *r, const char* n1, const char* n2)
 {
     const vfs_entry_t* vfs = get_vfs_for_path(n1);
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const vfs_entry_t* vfs2 = get_vfs_for_path(n2);
     if (vfs != vfs2) {
-        __errno_r(r) = EXDEV;
+        //__errno_r(r) = EXDEV;
         return -1;
     }
     const char* path1_within_vfs = translate_path(vfs, n1);
@@ -630,27 +632,31 @@ int esp_vfs_link(struct _reent *r, const char* n1, const char* n2)
 
 int esp_vfs_unlink(struct _reent *r, const char *path)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_path(path);
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, path);
     int ret;
     CHECK_AND_CALL(ret, r, vfs, unlink, path_within_vfs);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_rename(struct _reent *r, const char *src, const char *dst)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_path(src);
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const vfs_entry_t* vfs_dst = get_vfs_for_path(dst);
     if (vfs != vfs_dst) {
-        __errno_r(r) = EXDEV;
+        //__errno_r(r) = EXDEV;
         return -1;
     }
     const char* src_within_vfs = translate_path(vfs, src);
@@ -658,14 +664,17 @@ int esp_vfs_rename(struct _reent *r, const char *src, const char *dst)
     int ret;
     CHECK_AND_CALL(ret, r, vfs, rename, src_within_vfs, dst_within_vfs);
     return ret;
+    */
+    return 0;
 }
 
 DIR* esp_vfs_opendir(const char* name)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_path(name);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return NULL;
     }
     const char* path_within_vfs = translate_path(vfs, name);
@@ -675,25 +684,32 @@ DIR* esp_vfs_opendir(const char* name)
         ret->dd_vfs_idx = vfs->offset;
     }
     return ret;
+    */
+
+    return 0;
 }
 
 struct dirent* esp_vfs_readdir(DIR* pdir)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-       __errno_r(r) = EBADF;
+       //__errno_r(r) = EBADF;
         return NULL;
     }
     struct dirent* ret;
     CHECK_AND_CALLP(ret, r, vfs, readdir, pdir);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_readdir_r(DIR* pdir, struct dirent* entry, struct dirent** out_dirent)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
         errno = EBADF;
         return -1;
@@ -701,12 +717,15 @@ int esp_vfs_readdir_r(DIR* pdir, struct dirent* entry, struct dirent** out_diren
     int ret;
     CHECK_AND_CALL(ret, r, vfs, readdir_r, pdir, entry, out_dirent);
     return ret;
+    */
+    return 0;
 }
 
 long esp_vfs_telldir(DIR* pdir)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
         errno = EBADF;
         return -1;
@@ -714,17 +733,21 @@ long esp_vfs_telldir(DIR* pdir)
     long ret;
     CHECK_AND_CALL(ret, r, vfs, telldir, pdir);
     return ret;
+    */
+    return 0;
 }
 
 void esp_vfs_seekdir(DIR* pdir, long loc)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
         errno = EBADF;
         return;
     }
     CHECK_AND_CALLV(r, vfs, seekdir, pdir, loc);
+    */
 }
 
 void esp_vfs_rewinddir(DIR* pdir)
@@ -734,8 +757,9 @@ void esp_vfs_rewinddir(DIR* pdir)
 
 int esp_vfs_closedir(DIR* pdir)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_index(pdir->dd_vfs_idx);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
         errno = EBADF;
         return -1;
@@ -743,76 +767,93 @@ int esp_vfs_closedir(DIR* pdir)
     int ret;
     CHECK_AND_CALL(ret, r, vfs, closedir, pdir);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_mkdir(const char* name, mode_t mode)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_path(name);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, name);
     int ret;
     CHECK_AND_CALL(ret, r, vfs, mkdir, path_within_vfs, mode);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_rmdir(const char* name)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_path(name);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, name);
     int ret;
     CHECK_AND_CALL(ret, r, vfs, rmdir, path_within_vfs);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_access(const char *path, int amode)
 {
+    /*
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, path);
     CHECK_AND_CALL(ret, r, vfs, access, path_within_vfs, amode);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_truncate(const char *path, off_t length)
 {
+    /*
     int ret;
     const vfs_entry_t* vfs = get_vfs_for_path(path);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL) {
-        __errno_r(r) = ENOENT;
+        //__errno_r(r) = ENOENT;
         return -1;
     }
     const char* path_within_vfs = translate_path(vfs, path);
     CHECK_AND_CALL(ret, r, vfs, truncate, path_within_vfs, length);
     return ret;
+    */
+    return 0;
 }
 
 int esp_vfs_ftruncate(int fd, off_t length)
 {
+    /*
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
     CHECK_AND_CALL(ret, r, vfs, ftruncate, local_fd, length);
     return ret;
+    */
+    return 0;
 }
 
 #endif // CONFIG_VFS_SUPPORT_DIR
@@ -888,7 +929,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
     // NOTE: Please see the "Synchronous input/output multiplexing" section of the ESP-IDF Programming Guide
     // (API Reference -> Storage -> Virtual Filesystem) for a general overview of the implementation of VFS select().
     int ret = 0;
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
 
     ESP_LOGD(TAG, "esp_vfs_select starts with nfds = %d", nfds);
     if (timeout) {
@@ -900,7 +941,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
 
     if (nfds > MAX_FDS || nfds < 0) {
         ESP_LOGD(TAG, "incorrect nfds");
-        __errno_r(r) = EINVAL;
+        //__errno_r(r) = EINVAL;
         return -1;
     }
 
@@ -910,7 +951,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
     const size_t vfs_count = s_vfs_count;
     fds_triple_t *vfs_fds_triple;
     if ((vfs_fds_triple = calloc(vfs_count, sizeof(fds_triple_t))) == NULL) {
-        __errno_r(r) = ENOMEM;
+        //__errno_r(r) = ENOMEM;
         ESP_LOGD(TAG, "calloc is unsuccessful");
         return -1;
     }
@@ -980,7 +1021,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
         sel_sem.is_sem_local = true;
         if ((sel_sem.sem = xSemaphoreCreateBinary()) == NULL) {
             free(vfs_fds_triple);
-            __errno_r(r) = ENOMEM;
+            //__errno_r(r) = ENOMEM;
             ESP_LOGD(TAG, "cannot create select semaphore");
             return -1;
         }
@@ -990,7 +1031,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
 
     if (driver_args == NULL) {
         free(vfs_fds_triple);
-        __errno_r(r) = ENOMEM;
+        ///__errno_r(r) = ENOMEM;
         ESP_LOGD(TAG, "calloc is unsuccessful for driver args");
         return -1;
     }
@@ -1004,7 +1045,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
         } else if (vfs && vfs->vfs.start_select && item->isset) {
             // call start_select for all non-socket VFSs with has at least one FD set in readfds, writefds, or errorfds
             // note: it can point to socket VFS but item->isset will be false for that
-            ESP_LOGD(TAG, "calling start_select for VFS ID %d with the following local FDs", i);
+            ESP_LOGD(TAG, "calling start_select for VFS ID %d with the following local FDs", (int)i);
             esp_vfs_log_fd_set("readfds", &item->readfds);
             esp_vfs_log_fd_set("writefds", &item->writefds);
             esp_vfs_log_fd_set("errorfds", &item->errorfds);
@@ -1022,7 +1063,7 @@ int esp_vfs_select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds
                 }
                 free(vfs_fds_triple);
                 free(driver_args);
-                __errno_r(r) = EINTR;
+                //__errno_r(r) = EINTR;
                 ESP_LOGD(TAG, "start_select failed: %s", esp_err_to_name(err));
                 return -1;
             }
@@ -1148,9 +1189,9 @@ int tcgetattr(int fd, struct termios *p)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1162,9 +1203,9 @@ int tcsetattr(int fd, int optional_actions, const struct termios *p)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1176,9 +1217,9 @@ int tcdrain(int fd)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1190,9 +1231,9 @@ int tcflush(int fd, int select)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1204,9 +1245,9 @@ int tcflow(int fd, int action)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1218,9 +1259,9 @@ pid_t tcgetsid(int fd)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1232,9 +1273,9 @@ int tcsendbreak(int fd, int duration)
 {
     const vfs_entry_t* vfs = get_vfs_for_fd(fd);
     const int local_fd = get_local_fd(vfs, fd);
-    struct _reent* r = __getreent();
+    // struct _reent* r = 0; //__errno_r(r) =
     if (vfs == NULL || local_fd < 0) {
-        __errno_r(r) = EBADF;
+        //__errno_r(r) = EBADF;
         return -1;
     }
     int ret;
@@ -1250,7 +1291,7 @@ int tcsendbreak(int fd, int duration)
    directly here saves an additional function call when a software function is linked to one, and
    makes linking with -stdlib easier.
  */
-#ifdef CONFIG_VFS_SUPPORT_IO
+#ifdef CONFIG_VFS_SUPPORT_IO____XXXXXXXXX
 int _open_r(struct _reent *r, const char * path, int flags, int mode)
     __attribute__((alias("esp_vfs_open")));
 int _close_r(struct _reent *r, int fd)
@@ -1280,7 +1321,7 @@ int select(int nfds, fd_set *readfds, fd_set *writefds, fd_set *errorfds, struct
     __attribute__((alias("esp_vfs_select")));
 #endif // CONFIG_VFS_SUPPORT_SELECT
 
-#ifdef CONFIG_VFS_SUPPORT_DIR
+#ifdef CONFIG_VFS_SUPPORT_DIR___XXXX
 int _stat_r(struct _reent *r, const char * path, struct stat * st)
     __attribute__((alias("esp_vfs_stat")));
 int _link_r(struct _reent *r, const char* n1, const char* n2)

@@ -17,8 +17,8 @@
 #include "esp_vfs_usb_serial_jtag.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "driver/uart.h"
-#include "driver/usb_serial_jtag.h"
+//#include "driver/uart.h"
+//#include "driver/usb_serial_jtag.h"
 #include "linenoise/linenoise.h"
 
 static const char *TAG = "console.repl";
@@ -207,6 +207,7 @@ _exit:
 esp_err_t esp_console_new_repl_uart(const esp_console_dev_uart_config_t *dev_config, const esp_console_repl_config_t *repl_config, esp_console_repl_t **ret_repl)
 {
     esp_err_t ret = ESP_OK;
+#ifdef XXXXXXXXXXXXXXXXX
     esp_console_repl_universal_t *uart_repl = NULL;
     if (!repl_config | !dev_config | !ret_repl) {
         ret = ESP_ERR_INVALID_ARG;
@@ -302,6 +303,7 @@ _exit:
     if (ret_repl) {
         *ret_repl = NULL;
     }
+#endif
     return ret;
 }
 #endif // CONFIG_ESP_CONSOLE_UART_DEFAULT || CONFIG_ESP_CONSOLE_UART_CUSTOM

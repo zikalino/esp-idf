@@ -27,7 +27,7 @@
 
 #include <string.h>
 #include <stdio.h>
-#include <machine/endian.h>
+#include <endian.h>
 #include <assert.h>
 
 #include "freertos/FreeRTOS.h"

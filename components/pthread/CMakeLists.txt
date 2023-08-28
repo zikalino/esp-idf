@@ -1,7 +1,9 @@
 idf_build_get_property(target IDF_TARGET)
 if(${target} STREQUAL "linux")
     # Make pthread component an empty interface lib referencing host pthread for Linux target
-    idf_component_register()
+    set(sources "pthread_xxx.c")
+
+    idf_component_register(SRCS ${sources})
     set(THREADS_PREFER_PTHREAD_FLAG ON)
     find_package(Threads REQUIRED)
     target_link_libraries(${COMPONENT_LIB} INTERFACE Threads::Threads)
@@ -16,6 +18,8 @@ set(sources "pthread.c"
 
 idf_component_register(SRCS ${sources}
                     INCLUDE_DIRS include)
+
+return()
 
 idf_build_set_property(COMPILE_DEFINITIONS "_POSIX_READER_WRITER_LOCKS" APPEND)
 

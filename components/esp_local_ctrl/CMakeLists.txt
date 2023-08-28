@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(include_dirs include)
 set(priv_include_dirs proto-c src ../protocomm/proto-c)
 set(srcs  "src/esp_local_ctrl.c"

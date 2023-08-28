@@ -6,7 +6,7 @@
 
 #pragma once
 
-#include <sys/reent.h>
+//#include <sys/reent.h>
 
 #ifdef __cplusplus
 extern "C" {

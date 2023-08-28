@@ -12,7 +12,7 @@
 #include <unistd.h>
 #include "esp_timer.h"
 #include "esp_log.h"
-#include "esp_sleep.h"
+//#include "esp_sleep.h"
 #include "sdkconfig.h"
 
 static void periodic_timer_callback(void* arg);
@@ -50,7 +50,7 @@ void app_main(void)
     /* Start the timers */
     ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer, 500000));
     ESP_ERROR_CHECK(esp_timer_start_once(oneshot_timer, 5000000));
-    ESP_LOGI(TAG, "Started timers, time since boot: %lld us", esp_timer_get_time());
+    ESP_LOGI(TAG, "Started timers, time since boot: %" PRIu64 " us", (uint64_t)0 /*esp_timer_get_time()*/);
 
     /* Print debugging information about timers to console every 2 seconds */
     for (int i = 0; i < 5; ++i) {
@@ -61,14 +61,14 @@ void app_main(void)
     /* Timekeeping continues in light sleep, and timers are scheduled
      * correctly after light sleep.
      */
-    int64_t t1 = esp_timer_get_time();
-    ESP_LOGI(TAG, "Entering light sleep for 0.5s, time since boot: %lld us", t1);
+    int64_t t1 = 0; // esp_timer_get_time();
+    ESP_LOGI(TAG, "Entering light sleep for 0.5s, time since boot: %" PRIu64 " us", t1);
 
-    ESP_ERROR_CHECK(esp_sleep_enable_timer_wakeup(500000));
-    esp_light_sleep_start();
+    //ESP_ERROR_CHECK(esp_sleep_enable_timer_wakeup(500000));
+    //esp_light_sleep_start();
 
-    int64_t t2 = esp_timer_get_time();
-    ESP_LOGI(TAG, "Woke up from light sleep, time since boot: %lld us", t2);
+    int64_t t2 = 0; // esp_timer_get_time();
+    ESP_LOGI(TAG, "Woke up from light sleep, time since boot: %" PRIu64 " us", t2);
 
     assert(llabs((t2 - t1) - 500000) < 1000);
 
@@ -84,19 +84,19 @@ void app_main(void)
 
 static void periodic_timer_callback(void* arg)
 {
-    int64_t time_since_boot = esp_timer_get_time();
-    ESP_LOGI(TAG, "Periodic timer called, time since boot: %lld us", time_since_boot);
+    int64_t time_since_boot = 0; // esp_timer_get_time();
+    ESP_LOGI(TAG, "Periodic timer called, time since boot: %" PRIu64 " us", time_since_boot);
 }
 
 static void oneshot_timer_callback(void* arg)
 {
-    int64_t time_since_boot = esp_timer_get_time();
-    ESP_LOGI(TAG, "One-shot timer called, time since boot: %lld us", time_since_boot);
+    int64_t time_since_boot = 0; // esp_timer_get_time();
+    ESP_LOGI(TAG, "One-shot timer called, time since boot: %" PRIu64 " us", time_since_boot);
     esp_timer_handle_t periodic_timer_handle = (esp_timer_handle_t) arg;
     /* To start the timer which is running, need to stop it first */
     ESP_ERROR_CHECK(esp_timer_stop(periodic_timer_handle));
     ESP_ERROR_CHECK(esp_timer_start_periodic(periodic_timer_handle, 1000000));
-    time_since_boot = esp_timer_get_time();
-    ESP_LOGI(TAG, "Restarted periodic timer with 1s period, time since boot: %lld us",
+    time_since_boot = 0; // esp_timer_get_time();
+    ESP_LOGI(TAG, "Restarted periodic timer with 1s period, time since boot: %" PRIu64 " us",
             time_since_boot);
 }

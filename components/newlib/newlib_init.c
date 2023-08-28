@@ -14,12 +14,12 @@
 #include <sys/stat.h>
 #include <sys/signal.h>
 #include <sys/unistd.h>
-#include <sys/reent.h>
+//#include <sys/reent.h>
 #include <assert.h>
 #include "esp_newlib.h"
 #include "esp_attr.h"
 #include "soc/soc_caps.h"
-#include "esp_rom_caps.h"
+//#include "esp_rom_caps.h"
 
 #if CONFIG_IDF_TARGET_ESP32
 #include "esp32/rom/libc_stubs.h"
@@ -39,25 +39,29 @@
 #include "esp32p4/rom/libc_stubs.h"
 #endif
 
-static struct _reent s_reent;
+//struct _reent{ int kupa;
+//}
 
-extern int _printf_float(struct _reent *rptr,
-               void *pdata,
-               FILE * fp,
-               int (*pfunc) (struct _reent *, FILE *, const char *, size_t len),
-               va_list * ap);
+//static struct _reent s_reent;
+
+//extern int _printf_float(struct _reent *rptr,
+//               void *pdata,
+//               FILE * fp,
+//               int (*pfunc) (struct _reent *, FILE *, const char *, size_t len),
+//               va_list * ap);
 
 
-extern int _scanf_float(struct _reent *rptr,
-              void *pdata,
-              FILE *fp,
-              va_list *ap);
+//extern int _scanf_float(struct _reent *rptr,
+//              void *pdata,
+//              FILE *fp,
+//              va_list *ap);
 
-static void raise_r_stub(struct _reent *rptr)
-{
-    _raise_r(rptr, 0);
-}
+//static void raise_r_stub(struct _reent *rptr)
+//{
+//    _raise_r(rptr, 0);
+//}
 
+#ifdef XXXXX
 static struct syscall_stub_table s_stub_table = {
     .__getreent = &__getreent,
     ._malloc_r = &_malloc_r,
@@ -130,7 +134,7 @@ static struct syscall_stub_table s_stub_table = {
     ._cleanup_r = &_cleanup_r,
 #endif
 };
-
+#endif
 void esp_newlib_init(void)
 {
 #if CONFIG_IDF_TARGET_ESP32
@@ -138,10 +142,10 @@ void esp_newlib_init(void)
 #elif CONFIG_IDF_TARGET_ESP32S2
     syscall_table_ptr_pro = &s_stub_table;
 #else
-    syscall_table_ptr = &s_stub_table;
+    //syscall_table_ptr = &s_stub_table;
 #endif
 
-    _GLOBAL_REENT = &s_reent;
+    //_GLOBAL_REENT = &s_reent;
 
     environ = malloc(sizeof(char*));
     if (environ == 0) {

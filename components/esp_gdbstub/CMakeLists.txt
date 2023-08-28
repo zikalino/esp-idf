@@ -1,4 +1,9 @@
-﻿set(srcs "src/gdbstub.c"
+﻿if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
+set(srcs "src/gdbstub.c"
          "src/gdbstub_transport.c"
          "src/packet.c")
 

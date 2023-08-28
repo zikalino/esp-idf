@@ -6,7 +6,7 @@
 
 #include <sys/lock.h>
 #include <stdlib.h>
-#include <sys/reent.h>
+//#include <sys/reent.h>
 #include "esp_attr.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"

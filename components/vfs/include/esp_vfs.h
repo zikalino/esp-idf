@@ -16,12 +16,12 @@
 #include "freertos/semphr.h"
 #include "esp_err.h"
 #include <sys/types.h>
-#include <sys/reent.h>
+//#include <sys/reent.h>
 #include <sys/stat.h>
 #include <sys/time.h>
 #include <sys/termios.h>
 #include <sys/poll.h>
-#include <sys/dirent.h>
+#include <dirent.h>
 #include <string.h>
 #include "sdkconfig.h"
 
@@ -30,7 +30,7 @@ extern "C" {
 #endif
 
 #ifndef _SYS_TYPES_FD_SET
-#error "VFS should be used with FD_SETSIZE and FD_SET from sys/types.h"
+//#error "VFS should be used with FD_SETSIZE and FD_SET from sys/types.h"
 #endif
 
 /**
@@ -369,11 +369,17 @@ esp_err_t esp_vfs_register_fd_with_local_fd(esp_vfs_id_t vfs_id, int local_fd, b
  */
 esp_err_t esp_vfs_unregister_fd(esp_vfs_id_t vfs_id, int fd);
 
+
+struct _reent {
+    int dupa;
+};
+
 /**
  * These functions are to be used in newlib syscall table. They will be called by
  * newlib when it needs to use any of the syscalls.
  */
 /**@{*/
+
 ssize_t esp_vfs_write(struct _reent *r, int fd, const void * data, size_t size);
 off_t esp_vfs_lseek(struct _reent *r, int fd, off_t size, int mode);
 ssize_t esp_vfs_read(struct _reent *r, int fd, void * dst, size_t size);

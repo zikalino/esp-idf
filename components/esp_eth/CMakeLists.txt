@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 idf_build_get_property(components_to_build BUILD_COMPONENTS)
 
 set(srcs)

@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 if(NOT ${IDF_TARGET} STREQUAL "linux")
     set(req lwip esp_event)
 else()

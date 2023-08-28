@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs "src/wifi_config.c"
         "src/wifi_scan.c"
         "src/wifi_ctrl.c"

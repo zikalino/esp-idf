@@ -1,4 +1,9 @@
-﻿set(srcs "src/core_dump_common.c"
+﻿if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
+set(srcs "src/core_dump_common.c"
          "src/core_dump_checksum.c"
          "src/core_dump_flash.c"
          "src/core_dump_uart.c"

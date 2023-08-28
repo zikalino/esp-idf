@@ -1,0 +1,2 @@
+void newlib_stub()
+{}

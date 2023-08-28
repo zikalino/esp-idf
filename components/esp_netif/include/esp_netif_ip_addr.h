@@ -8,7 +8,7 @@
 #define _ESP_NETIF_IP_ADDR_H_
 
 #include <stdint.h>
-#include <machine/endian.h>
+#include <endian.h>
 #include "sdkconfig.h"
 
 #ifdef __cplusplus

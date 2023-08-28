@@ -197,7 +197,7 @@ esp_err_t esp_console_run(const char *cmdline, int *cmd_ret)
     if (argv == NULL) {
         return ESP_ERR_NO_MEM;
     }
-    strlcpy(s_tmp_line_buf, cmdline, s_config.max_cmdline_length);
+    strncpy(s_tmp_line_buf, cmdline, s_config.max_cmdline_length);
 
     size_t argc = esp_console_split_argv(s_tmp_line_buf, argv,
                                          s_config.max_cmdline_args);

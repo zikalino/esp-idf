@@ -90,7 +90,7 @@ static int get_version(int argc, char **argv)
         printf("Get flash size failed");
         return 1;
     }
-    printf("IDF Version:%s\r\n", esp_get_idf_version());
+    //printf("IDF Version:%s\r\n", esp_get_idf_version());
     printf("Chip info:\r\n");
     printf("\tmodel:%s\r\n", model);
     printf("\tcores:%d\r\n", info.cores);
@@ -120,7 +120,8 @@ static void register_version(void)
 static int restart(int argc, char **argv)
 {
     ESP_LOGI(TAG, "Restarting");
-    esp_restart();
+    //esp_restart();
+    return 0;
 }
 
 static void register_restart(void)
@@ -138,7 +139,7 @@ static void register_restart(void)
 
 static int free_mem(int argc, char **argv)
 {
-    printf("%"PRIu32"\n", esp_get_free_heap_size());
+    //printf("%"PRIu32"\n", esp_get_free_heap_size());
     return 0;
 }
 

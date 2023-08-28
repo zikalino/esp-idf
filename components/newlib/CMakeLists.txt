@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register(SRCS newlib_stub.c)
+    return()
+endif()
+
 if(BOOTLOADER_BUILD)
     # Bootloader builds need the platform_include directory (for assert.h), but nothing else
     idf_component_register(INCLUDE_DIRS platform_include)

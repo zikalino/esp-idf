@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 set(srcs "src/esp_hidd.c"
          "src/esp_hidh.c"
          "src/esp_hid_common.c")

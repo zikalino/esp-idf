@@ -5,7 +5,7 @@
 #ifndef BYTESWAP_H
 #define BYTESWAP_H
 
-#include <machine/endian.h>
+#include <endian.h>
 
 /* Swap bytes in 16 bit value.  */
 #ifndef __bswap_16

@@ -20,7 +20,7 @@ ssize_t getrandom(void *buf, size_t buflen, unsigned int flags)
     // - esp_random is non-blocking so it works for both blocking and non-blocking calls,
     // - don't have opportunity so set som other source of entropy.
 
-    ESP_LOGD(TAG, "getrandom(buf=0x%x, buflen=%d, flags=%u)", (int) buf, buflen, flags);
+    ESP_LOGD(TAG, "getrandom(buf=0x%x, buflen=%d, flags=%u)", (unsigned long) buf, (int)buflen, flags);
 
     if (buf == NULL) {
         errno = EFAULT;
@@ -30,6 +30,6 @@ ssize_t getrandom(void *buf, size_t buflen, unsigned int flags)
 
     esp_fill_random(buf, buflen);
 
-    ESP_LOGD(TAG, "getrandom returns %d", buflen);
+    ESP_LOGD(TAG, "getrandom returns %d", (int)buflen);
     return buflen;
 }

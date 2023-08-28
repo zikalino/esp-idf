@@ -1,3 +1,8 @@
+if(IDF_TARGET STREQUAL "linux")
+    idf_component_register()
+    return()
+endif()
+
 idf_component_register(SRCS "sdmmc_cmd.c"
                             "sdmmc_common.c"
                             "sdmmc_init.c"

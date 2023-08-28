@@ -3,8 +3,8 @@
  *
  * SPDX-License-Identifier: Apache-2.0
  */
-#include <pthread.h>
-#include "esp_log.h"
+//#include <pthread.h>
+//#include "esp_log.h"
 
 const static char *TAG = "esp32_asio_pthread";
 
