@@ -1,8 +1,3 @@
-if(IDF_TARGET STREQUAL "linux")
-    idf_component_register()
-    return()
-endif()
-
 set(srcs
     "transport.c"
     "transport_ssl.c"
