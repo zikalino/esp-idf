@@ -322,7 +322,7 @@ static esp_err_t upload_post_handler(httpd_req_t *req)
 
     /* File cannot be larger than a limit */
     if (req->content_len > MAX_FILE_SIZE) {
-        ESP_LOGE(TAG, "File too large : %d bytes", req->content_len);
+        ESP_LOGE(TAG, "File too large : %d bytes", (int)req->content_len);
         /* Respond with 400 Bad Request */
         httpd_resp_send_err(req, HTTPD_400_BAD_REQUEST,
                             "File size must be less than "

@@ -13,8 +13,12 @@
 #include <nvs_flash.h>
 #include <sys/param.h>
 #include "esp_netif.h"
+#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
+#endif
+#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_wifi.h"
+#endif
 #include "protocol_examples_common.h"
 #include "lwip/sockets.h"
 #include <esp_https_server.h>
@@ -50,7 +54,7 @@ static esp_err_t ws_handler(httpd_req_t *req)
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed to get frame len with %d", ret);
         return ret;
     }
-    ESP_LOGI(TAG, "frame len is %d", ws_pkt.len);
+    ESP_LOGI(TAG, "frame len is %d", (int)ws_pkt.len);
     if (ws_pkt.len) {
         /* ws_pkt.len + 1 is for NULL termination as we are expecting a string */
         buf = calloc(1, ws_pkt.len + 1);
@@ -219,6 +223,7 @@ static httpd_handle_t start_wss_echo_server(void)
     return server;
 }
 
+#if defined(CONFIG_EXAMPLE_CONNECT_WIFI) || defined(CONFIG_EXAMPLE_CONNECT_ETHERNET)
 static esp_err_t stop_wss_echo_server(httpd_handle_t server)
 {
     // Stop keep alive thread
@@ -248,6 +253,7 @@ static void connect_handler(void* arg, esp_event_base_t event_base,
         *server = start_wss_echo_server();
     }
 }
+#endif
 
 // Get all clients and send async message
 static void wss_server_send_messages(httpd_handle_t* server)

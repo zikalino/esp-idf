@@ -21,7 +21,7 @@ struct async_resp_arg {
 static esp_err_t hello_get_handler(httpd_req_t *req)
 {
 #define STR "Hello World!"
-    ESP_LOGI(TAG, "Free Stack for server task: '%d'", uxTaskGetStackHighWaterMark(NULL));
+    ESP_LOGI(TAG, "Free Stack for server task: '%d'", (int)uxTaskGetStackHighWaterMark(NULL));
     httpd_resp_send(req, STR, HTTPD_RESP_USE_STRLEN);
     return ESP_OK;
 #undef STR
@@ -137,14 +137,14 @@ static esp_err_t hello_status_get_handler(httpd_req_t *req)
 
 static esp_err_t echo_post_handler(httpd_req_t *req)
 {
-    ESP_LOGI(TAG, "/echo handler read content length %d", req->content_len);
+    ESP_LOGI(TAG, "/echo handler read content length %d", (int)req->content_len);
 
     char*  buf = malloc(req->content_len + 1);
     size_t off = 0;
     int    ret;
 
     if (!buf) {
-        ESP_LOGE(TAG, "Failed to allocate memory of %d bytes!", req->content_len + 1);
+        ESP_LOGE(TAG, "Failed to allocate memory of %d bytes!", (int)req->content_len + 1);
         httpd_resp_send_500(req);
         return ESP_FAIL;
     }
@@ -175,7 +175,7 @@ static esp_err_t echo_post_handler(httpd_req_t *req)
         /* Read Custom header value */
         req_hdr = malloc(hdr_len + 1);
         if (!req_hdr) {
-            ESP_LOGE(TAG, "Failed to allocate memory of %d bytes!", hdr_len + 1);
+            ESP_LOGE(TAG, "Failed to allocate memory of %d bytes!", (int)hdr_len + 1);
             httpd_resp_send_500(req);
             return ESP_FAIL;
         }
@@ -269,7 +269,7 @@ static void generate_async_resp(void *arg)
     ESP_LOGI(TAG, "Executing queued work fd : %d", fd);
 
     snprintf(buf, sizeof(buf), HTTPD_HDR_STR,
-         strlen(STR));
+         (int)strlen(STR));
     httpd_socket_send(hd, fd, buf, strlen(buf), 0);
     /* Space for sending additional headers based on set_header */
     httpd_socket_send(hd, fd, "\r\n", strlen("\r\n"), 0);
@@ -381,7 +381,7 @@ static httpd_handle_t test_httpd_start(void)
         ESP_LOGI(TAG, "Max Open Sessions: '%d'", config.max_open_sockets);
         ESP_LOGI(TAG, "Max Header Length: '%d'", HTTPD_MAX_REQ_HDR_LEN);
         ESP_LOGI(TAG, "Max URI Length: '%d'", HTTPD_MAX_URI_LEN);
-        ESP_LOGI(TAG, "Max Stack Size: '%d'", config.stack_size);
+        ESP_LOGI(TAG, "Max Stack Size: '%d'", (int)config.stack_size);
         return hd;
     }
     return NULL;

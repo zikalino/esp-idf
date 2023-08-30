@@ -7,13 +7,17 @@
    CONDITIONS OF ANY KIND, either express or implied.
 */
 
+#ifdef CONFIG_EXAMPLE_CONNECT_WIFI
 #include <esp_wifi.h>
+#endif
 #include <esp_event.h>
 #include <esp_log.h>
 #include <esp_system.h>
 #include <nvs_flash.h>
 #include "esp_netif.h"
+#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET
 #include "esp_eth.h"
+#endif
 #include "protocol_examples_common.h"
 
 #include <esp_http_server.h>
@@ -243,12 +247,12 @@ static httpd_handle_t start_webserver(void)
     return NULL;
 }
 
+#ifdef defined(CONFIG_EXAMPLE_CONNECT_WIFI) || defined (#ifdef CONFIG_EXAMPLE_CONNECT_ETHERNET)
 static esp_err_t stop_webserver(httpd_handle_t server)
 {
     // Stop the httpd server
     return httpd_stop(server);
 }
-
 
 static void disconnect_handler(void* arg, esp_event_base_t event_base,
                                int32_t event_id, void* event_data)
@@ -273,7 +277,7 @@ static void connect_handler(void* arg, esp_event_base_t event_base,
         *server = start_webserver();
     }
 }
-
+#endif
 
 void app_main(void)
 {
