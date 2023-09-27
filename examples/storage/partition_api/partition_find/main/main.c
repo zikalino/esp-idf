@@ -73,7 +73,7 @@ void app_main(void)
     extern const char csv_start[] asm("_binary_partitions_example_csv_start");
     extern const char csv_end[]   asm("_binary_partitions_example_csv_end");
 
-    ESP_LOGI(TAG, "Printing partition table csv file contents for reference...\n\n%.*s", csv_end - csv_start + 1, csv_start);
+    ESP_LOGI(TAG, "Printing partition table csv file contents for reference...\n\n%.*s", (int)(csv_end - csv_start + 1), csv_start);
 
     /* First Part - Finding partitions using esp_partition_find_first. */
 

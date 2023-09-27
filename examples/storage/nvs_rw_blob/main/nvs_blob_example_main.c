@@ -16,7 +16,7 @@
 #include "esp_system.h"
 #include "nvs_flash.h"
 #include "nvs.h"
-#include "driver/gpio.h"
+//#include "driver/gpio.h"
 
 #define STORAGE_NAMESPACE "storage"
 

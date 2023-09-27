@@ -140,7 +140,7 @@ static esp_err_t mesh_netif_transmit_from_root_ap(void *h, void *buffer, size_t 
     mesh_netif_driver_t mesh_driver = h;
     mesh_addr_t dest_addr;
     mesh_data_t data;
-    ESP_LOGD(TAG, "Sending to node: " MACSTR ", size: %d" ,MAC2STR((uint8_t*)buffer), len);
+    ESP_LOGD(TAG, "Sending to node: " MACSTR ", size: %d" ,MAC2STR((uint8_t*)buffer), (int)len);
     memcpy(dest_addr.addr, buffer, MAC_ADDR_LEN);
     data.data = buffer;
     data.size = len;
@@ -179,7 +179,7 @@ static esp_err_t mesh_netif_transmit_from_root_ap_wrap(void *h, void *buffer, si
 static esp_err_t mesh_netif_transmit_from_node_sta(void *h, void *buffer, size_t len)
 {
     mesh_data_t data;
-    ESP_LOGD(TAG, "Sending to root, dest addr: " MACSTR ", size: %d" ,MAC2STR((uint8_t*)buffer), len);
+    ESP_LOGD(TAG, "Sending to root, dest addr: " MACSTR ", size: %d" ,MAC2STR((uint8_t*)buffer), (int)len);
     data.data = buffer;
     data.size = len;
     data.proto = MESH_PROTO_AP; // Node's station transmits data to root's AP

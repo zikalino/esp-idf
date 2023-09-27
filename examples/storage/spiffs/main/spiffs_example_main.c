@@ -60,7 +60,7 @@ void app_main(void)
         esp_spiffs_format(conf.partition_label);
         return;
     } else {
-        ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+        ESP_LOGI(TAG, "Partition size: total: %d, used: %d", (int)total, (int)used);
     }
 
     // Check consistency of reported partiton size info.

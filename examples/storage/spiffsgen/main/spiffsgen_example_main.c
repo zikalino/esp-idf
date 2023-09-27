@@ -109,7 +109,7 @@ void app_main(void)
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "Failed to get SPIFFS partition information (%s)", esp_err_to_name(ret));
     } else {
-        ESP_LOGI(TAG, "Partition size: total: %d, used: %d", total, used);
+        ESP_LOGI(TAG, "Partition size: total: %d, used: %d", (int)total, (int)used);
     }
 
     /* The following calls demonstrate reading files from the generated SPIFFS
